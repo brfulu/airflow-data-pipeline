@@ -1,0 +1,10 @@
+version: '3'
+services:
+  airflow:
+    image: puckel/docker-airflow
+    container_name: my_airflow
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./src/plugins/:/usr/local/airflow/plugins
+      - ./src/dags:/usr/local/airflow/dags
