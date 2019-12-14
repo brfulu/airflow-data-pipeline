@@ -1,23 +1,26 @@
 from datetime import datetime, timedelta
 import os
 from airflow import DAG
+from airflow.contrib.hooks.aws_hook import AwsHook
 from airflow.operators.dummy_operator import DummyOperator
 from operators import (StageToRedshiftOperator, LoadFactOperator,
-                               LoadDimensionOperator, DataQualityOperator)
+                       LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
 
-# AWS_KEY = os.environ.get('AWS_KEY')
-# AWS_SECRET = os.environ.get('AWS_SECRET')
+# aws_hook = AwsHook("aws_credentials")
+# print(aws_hook.aws_conn_id)
+# credentials = aws_hook.get_credentials()
+# print(credentials)
 
 default_args = {
-    'owner': 'udacity',
+    'owner': 'brfulu',
     'start_date': datetime(2019, 1, 12),
 }
 
-dag = DAG('udac_example_dag',
+dag = DAG('s3_to_redshift_dag',
           default_args=default_args,
-          description='Load and transform data in Redshift with Airflow',
-          schedule_interval='0 * * * *'
+          description='Extract Load and Transform data from S3 to Redshift',
+          schedule_interval='@daily'
           )
 
 start_operator = DummyOperator(task_id='Begin_execution', dag=dag)
