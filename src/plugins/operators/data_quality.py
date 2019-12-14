@@ -2,8 +2,8 @@ from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
-class DataQualityOperator(BaseOperator):
 
+class DataQualityOperator(BaseOperator):
     ui_color = '#89DA59'
 
     @apply_defaults
@@ -12,7 +12,6 @@ class DataQualityOperator(BaseOperator):
                  # Example:
                  # conn_id = your-connection-name
                  *args, **kwargs):
-
         super(DataQualityOperator, self).__init__(*args, **kwargs)
         # Map params here
         # Example:
