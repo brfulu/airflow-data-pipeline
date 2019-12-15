@@ -8,14 +8,30 @@ class DataQualityOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 # Define your operators params (with defaults) here
-                 # Example:
-                 # conn_id = your-connection-name
+                 redshift_conn_id='redshift',
+                 check_stmts=[],
                  *args, **kwargs):
         super(DataQualityOperator, self).__init__(*args, **kwargs)
-        # Map params here
-        # Example:
-        # self.conn_id = conn_id
+        self.redshift_conn_id = redshift_conn_id
+        self.check_stmts = check_stmts
 
     def execute(self, context):
-        self.log.info('DataQualityOperator not implemented yet')
+        redshift_hook = PostgresHook("redshift")
+
+        for stmt in self.check_stmts:
+            result = int(redshift_hook.get_first(sql=stmt['sql'])[0])
+
+            # check if equal
+            if stmt['op'] == 'eq':
+                if result != stmt['val']:
+                    raise AssertionError(f"Check failed: {result} {stmt['op']} {stmt['val']}")
+            # check if not equal
+            elif stmt['op'] == 'ne':
+                if result == stmt['val']:
+                    raise AssertionError(f"Check failed: {result} {stmt['op']} {stmt['val']}")
+            # check if greater than
+            elif stmt['op'] == 'gt':
+                if result <= stmt['val']:
+                    raise AssertionError(f"Check failed: {result} {stmt['op']} {stmt['val']}")
+
+            self.log.info(f"Passed check: {result} {stmt['op']} {stmt['val']}")

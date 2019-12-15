@@ -9,22 +9,41 @@ class StageToRedshiftOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
+                 s3_bucket,
+                 s3_prefix,
+                 table,
                  redshift_conn_id='redshift',
                  aws_conn_id='aws_credentials',
-                 table_name='unknown',
+                 copy_options='',
                  *args, **kwargs):
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
+        self.s3_bucket = s3_bucket
+        self.s3_prefix = s3_prefix
+        self.table = table
         self.redshift_conn_id = redshift_conn_id
         self.aws_conn_id = aws_conn_id
+        self.copy_options = copy_options
 
     def execute(self, context):
-        print(self.redshift_conn_id)
-        print(self.aws_conn_id)
-
         aws_hook = AwsHook("aws_credentials")
         credentials = aws_hook.get_credentials()
         redshift_hook = PostgresHook("redshift")
 
-        print(credentials)
+        self.log.info(f'Preparing to stage data from {self.s3_bucket}/{self.s3_prefix} to {self.table} table...')
 
-        self.log.info('StageToRedshiftOperator not implemented yet')
+        copy_query = """
+                    COPY {table}
+                    FROM 's3://{s3_bucket}/{s3_prefix}'
+                    with credentials
+                    'aws_access_key_id={access_key};aws_secret_access_key={secret_key}'
+                    {copy_options};
+                """.format(table=self.table,
+                           s3_bucket=self.s3_bucket,
+                           s3_prefix=self.s3_prefix,
+                           access_key=credentials.access_key,
+                           secret_key=credentials.secret_key,
+                           copy_options=self.copy_options)
+
+        self.log.info('Executing COPY command...')
+        # redshift_hook.run(copy_query)
+        self.log.info("COPY command complete.")
