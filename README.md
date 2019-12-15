@@ -45,12 +45,12 @@ airflow-data-pipeline
 
 #### Clone repository to local machine
 ```
-git clone https://github.com/brfulu/postgres-data-modeling.git
+git clone https://github.com/brfulu/airflow-data-pipeline.git
 ```
 
 #### Change directory to local repository
 ```
-cd postgres-data-modeling
+cd airflow-data-pipeline
 ```
 
 #### Create python virtual environment
