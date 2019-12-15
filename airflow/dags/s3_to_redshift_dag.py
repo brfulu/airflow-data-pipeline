@@ -19,7 +19,7 @@ default_args = {
 dag = DAG('s3_to_redshift_dag',
           default_args=default_args,
           description='Extract Load and Transform data from S3 to Redshift',
-          schedule_interval='@daily',
+          schedule_interval='@hourly',
           catchup=False
           )
 

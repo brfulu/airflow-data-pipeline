@@ -115,6 +115,7 @@ class SqlQueries:
             ON events.song = songs.title
                 AND events.artist = songs.artist_name
                 AND events.length = songs.duration
+            WHERE songs.song_id IS NOT NULL
     """)
 
     users_table_insert = ("""
