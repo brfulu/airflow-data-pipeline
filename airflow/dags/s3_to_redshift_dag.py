@@ -142,9 +142,9 @@ run_quality_checks = DataQualityOperator(
             'val': 0
         },
         {
-            'sql': 'SELECT COUNT(*) FROM songplays;',
+            'sql': 'SELECT COUNT(*) FROM songplays WHERE songid IS NULL;',
             'op': 'eq',
-            'val': 261320
+            'val': 0
         }
     ]
 )

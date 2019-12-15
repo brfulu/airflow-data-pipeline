@@ -45,5 +45,5 @@ class StageToRedshiftOperator(BaseOperator):
                            copy_options=self.copy_options)
 
         self.log.info('Executing COPY command...')
-        # redshift_hook.run(copy_query)
+        redshift_hook.run(copy_query)
         self.log.info("COPY command complete.")

@@ -26,5 +26,5 @@ class LoadFactOperator(BaseOperator):
             {select_sql};
         """.format(table=self.table, select_sql=self.select_sql)
 
-        # redshift_hook.run(sql)
+        redshift_hook.run(sql)
         self.log.info("Loading complete.")
